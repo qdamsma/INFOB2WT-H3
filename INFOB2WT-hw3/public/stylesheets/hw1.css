@@ -1,0 +1,57 @@
+
+.hw-h1{
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.hw-h2, .hw-h3{
+        max-width: 100%; 
+        font-size: 1rem;
+        line-height: 1.5; 
+}
+
+.hw-text{
+    width: 100%;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+.hw-ul1 .hw-ul2{
+    padding-left: 1.5rem;
+    font-size: 1rem;
+}
+
+.hw-li1, .hw-li2 {
+    margin-bottom: 0.5rem;
+}
+a.hw-link:link{color:#00ff55;}
+a.hw-link:visited {color:#ff0000;}
+a.hw-link:hover {color:#ffcc00;}
+a.hw-link2{
+    color: rgb(192,10,53);
+    text-decoration: none;
+    border-bottom: 1.0px dotted rgb(38,38,38);
+}
+
+
+@media (max-width: 768px) {
+    .card-large {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .hw-h1 {
+        font-size: 1.5rem;
+    }
+
+    .hw-h2, .hw-h3 {
+        font-size: 1rem;
+    }
+
+    .hw-text {
+        font-size: 0.9rem;
+    }
+
+    .hw-ul1, .hw-ul2 {
+        font-size: 0.9rem;
+    }
+}
