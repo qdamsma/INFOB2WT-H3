@@ -15,9 +15,9 @@ router.get('/', (req, res) => {
 
 // GET /courses/:id (Get a course by ID)
 router.get('/:id', (req, res) => {
-    const courseId = req.params.id;
+    const course_id = req.params.id;
 
-    Course.findById(courseId, (err, course) => {
+    Course.findById(course_id, (err, course) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Failed to retrieve course' });
@@ -52,7 +52,7 @@ router.post('/', (req, res) => {
 
 // PUT /courses/:id (Update an existing course)
 router.put('/:id', (req, res) => {
-    const courseId = req.params.id;
+    const course_id = req.params.id;
     const updatedCourse = {
         course_name: req.body.course_name,
         description: req.body.description,
@@ -60,7 +60,7 @@ router.put('/:id', (req, res) => {
         points: req.body.points
     };
 
-    Course.update(courseId, updatedCourse, (err, course) => {
+    Course.update(course_id, updatedCourse, (err, course) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Failed to update course' });
@@ -76,9 +76,9 @@ router.put('/:id', (req, res) => {
 
 // DELETE /courses/:id (Delete a course)
 router.delete('/:id', (req, res) => {
-    const courseId = req.params.id;
+    const course_id = req.params.id;
 
-    Course.delete(courseId, (err) => {
+    Course.delete(course_id, (err) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Failed to delete course' });
