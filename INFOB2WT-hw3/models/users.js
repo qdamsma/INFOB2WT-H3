@@ -1,4 +1,3 @@
-// models/user.js
 const db = require('../database'); // Import the database connection
 const bcrypt = require('bcrypt');   // For password hashing
 
