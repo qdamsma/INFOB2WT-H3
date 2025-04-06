@@ -130,8 +130,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 
                 db.run(`INSERT OR IGNORE INTO Users (user_id, first_name, last_name, age, email, password, program_id, hobbies) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
-                    [i, firstName, lastName, age, email, password, programId, hobbies]);
-                }
+                    [i, firstName, lastName, age, email, password, programId, hobbies]
+                );
+            }
 
             for (let userId = 1; userId <= 50; userId++) {
                 const numCourses = Math.floor(Math.random() * 4) + 2;
