@@ -15,9 +15,9 @@ router.get('/', (req, res) => {
 
 // GET /programs/:id (Get a program by ID)
 router.get('/:id', (req, res) => {
-    const programId = req.params.id;
+    const program_id = req.params.id;
 
-    Program.findById(programId, (err, program) => {
+    Program.findById(program_id, (err, program) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Failed to retrieve program' });
@@ -50,13 +50,13 @@ router.post('/', (req, res) => {
 
 // PUT /programs/:id (Update an existing program)
 router.put('/:id', (req, res) => {
-    const programId = req.params.id;
+    const program_id = req.params.id;
     const updatedProgram = {
         program_name: req.body.program_name,
         description: req.body.description,
     };
 
-    Program.update(programId, updatedProgram, (err, program) => {
+    Program.update(program_id, updatedProgram, (err, program) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Failed to update program' });
@@ -72,9 +72,9 @@ router.put('/:id', (req, res) => {
 
 // DELETE /programs/:id (Delete a program)
 router.delete('/:id', (req, res) => {
-    const programId = req.params.id;
+    const program_id = req.params.id;
 
-    Program.delete(programId, (err) => {
+    Program.delete(program_id, (err) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Failed to delete program' });
