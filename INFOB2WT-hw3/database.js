@@ -107,71 +107,61 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 ('Ondernemerschap', 'Hoe start en beheer je een bedrijf.', '10 weken', 5)`
             );
             
-            const firstNames = ['Daan', 'Sanne', 'Bram', 'Fleur', 'Lars', 'Noa', 'Joris', 'Esmee', 'Thijs', 'Lieke'];
-            const lastNames = ['De Vries', 'Jansen', 'Van den Berg', 'Bakker', 'Peters', 'Hendriks', 'Meijer', 'Smit', 'Koning', 'Bos'];
-
-            const emails = [
-                'daan1@email.com', 'sanne2@email.com', 'bram3@email.com', 'fleur4@email.com', 'lars5@email.com',
-                'noa6@email.com', 'joris7@email.com', 'esmee8@email.com', 'thijs9@email.com', 'lieke10@email.com',
+            const fixedUsers = [
+                [1, 'Daan', 'De Vries', 22, 'daan1@email.com', 'Pass123!', 1],
+                [2, 'Sanne', 'Jansen', 24, 'sanne2@email.com', 'Pass123!', 2],
+                [3, 'Bram', 'Van den Berg', 21, 'bram3@email.com', 'Pass123!', 1],
+                [4, 'Fleur', 'Bakker', 23, 'fleur4@email.com', 'Pass123!', 3],
+                [5, 'Lars', 'Peters', 20, 'lars5@email.com', 'Pass123!', 1]
             ];
 
-            for (let i = 1; i <= 50; i++) {
-                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-                const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-                const age = Math.floor(Math.random() * (30 - 18 + 1)) + 18;
-                const email = emails[i-1];
-                const programId = Math.floor(Math.random() * 3) + 1;
-                const hobbies = JSON.stringify(['Lezen', 'Sport', 'Coderen', 'Muziek', 'Fotografie']);
-                const password = 'testpassword123';
-                
+            const hobbies = JSON.stringify(['Lezen', 'Sport', 'Coderen']);
+
+            fixedUsers.forEach(user => {
                 db.run(`INSERT OR IGNORE INTO Users (user_id, first_name, last_name, age, email, password, program_id, hobbies) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
-                    [i, firstName, lastName, age, email, password, programId, hobbies]
-                );
-            }
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [...user, hobbies]);
+            });
 
-            for (let userId = 1; userId <= 50; userId++) {
-                const numCourses = Math.floor(Math.random() * 4) + 2;
-                const selectedCourses = new Set();
+            const userCourses = [
+                [1, 1],
+                [1, 2],
+                [2, 3],
+                [2, 4],
+                [3, 1],
+                [3, 3],
+                [4, 5],
+                [5, 6]
+            ];
 
-                while (selectedCourses.size < numCourses) {
-                    selectedCourses.add(Math.floor(Math.random() * 10) + 1);
-                }
+            userCourses.forEach(([userId, courseId]) => {
+                db.run(`INSERT OR IGNORE INTO User_Courses (user_id, course_id, date_enrolled) VALUES (?, ?, DATE('now'))`, [userId, courseId]);
+            });
 
-                selectedCourses.forEach(courseId => {
-                    db.run(`INSERT OR IGNORE INTO User_Courses (user_id, course_id, date_enrolled) VALUES (?, ?, DATE('now'))`,
-                        [userId, courseId]);
-                });
-            }
+            const friendships = [
+                [1, 2],
+                [1, 3],
+                [2, 4],
+                [3, 5]
+            ];
 
-            for (let i = 0; i < 20; i++) {
-                const user1 = Math.floor(Math.random() * 50) + 1;
-                let user2 = Math.floor(Math.random() * 50) + 1;
-                while (user2 === user1) user2 = Math.floor(Math.random() * 50) + 1;
-
+            friendships.forEach(([user1, user2]) => {
                 db.run(`INSERT OR IGNORE INTO Friendships (user_id, friend_id, status) VALUES (?, ?, 1)`, [user1, user2]);
-            }
+            });
 
-            for (let i = 0; i < 30; i++) {
-                const sender = Math.floor(Math.random() * 50) + 1;
-                let receiver = Math.floor(Math.random() * 50) + 1;
-                while (receiver === sender) receiver = Math.floor(Math.random() * 50) + 1;
+            const messages = [
+                [1, 2, "Hey, hoe gaat het?"],
+                [2, 1, "Prima! En met jou?"],
+                [3, 1, "Wil je samen studeren?"],
+                [4, 2, "Heb je de opdracht al af?"],
+                [5, 3, "Ik heb moeite met databases, kun je helpen?"]
+            ];
 
-                const messages = [
-                    "Hey, hoe gaat het?",
-                    "Wat vond je van het laatste college?",
-                    "Wil je samen studeren?",
-                    "Heb je de opdracht al af?",
-                    "Laten we dit weekend afspreken!",
-                    "Ik heb moeite met de database-oefening, kun je helpen?"
-                ];
-                const messageText = messages[Math.floor(Math.random() * messages.length)];
+            messages.forEach(([sender, receiver, text]) => {
+                db.run(`INSERT OR IGNORE INTO Messages (sender_id, receiver_id, message_text) VALUES (?, ?, ?)`, [sender, receiver, text]);
+            });
 
-                db.run(`INSERT OR IGNORE INTO Messages (sender_id, receiver_id, message_text) VALUES (?, ?, ?)`,
-                    [sender, receiver, messageText]);
-            }
+            console.log("Database succesvol gevuld met vaste testdata!");
 
-            console.log("Database succesvol gevuld met testdata!");
         }); // End serialize
     }
 });
