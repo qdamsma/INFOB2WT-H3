@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const UserCourse = require('../models/user_course');
+const UserCourse = require('../models/user_courses');
 
 // POST /user_courses/enroll (Enroll a user in a course)
 router.post('/enroll', (req, res) => {

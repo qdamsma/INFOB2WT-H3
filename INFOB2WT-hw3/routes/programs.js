@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Program = require('../models/program');
+const Program = require('../models/programs');
 
 // GET /programs (Get all programs)
 router.get('/', (req, res) => {

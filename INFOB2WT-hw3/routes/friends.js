@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Friend = require('../models/friend');
+const Friend = require('../models/friends');
 
 // POST /friends/request (Send a friend request)
 router.post('/request', (req, res) => {
