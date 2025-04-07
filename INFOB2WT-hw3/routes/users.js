@@ -41,8 +41,14 @@ router.post('/login', (req, res) => {
                 return res.status(401).json({ error: 'Invalid email or password' });
             }
 
+            req.session.user = {
+                user_id: user.user_id,
+                email: user.email,
+                name: user.name
+            };
+
             // Handle successful login (e.g., create session, send token)
-            res.status(200).json({ message: 'Login successful', user: {user_id: user.user_id, email:user.email} }); // Send back user info useful on the client
+            res.status(200).json({ message: 'Login successful', user: req.session.user }); // Send back user info useful on the client
         });
     });
 });
