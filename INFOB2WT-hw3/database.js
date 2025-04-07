@@ -109,24 +109,20 @@ const db = new sqlite3.Database(dbPath, (err) => {
             
             const firstNames = ['Daan', 'Sanne', 'Bram', 'Fleur', 'Lars', 'Noa', 'Joris', 'Esmee', 'Thijs', 'Lieke'];
             const lastNames = ['De Vries', 'Jansen', 'Van den Berg', 'Bakker', 'Peters', 'Hendriks', 'Meijer', 'Smit', 'Koning', 'Bos'];
-            
-            function generatePassword(length = 8) {
-                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
-                let password = '';
-                for (let i = 0; i < length; i++) {
-                    password += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return password;
-            }
+
+            const emails = [
+                'daan1@email.com', 'sanne2@email.com', 'bram3@email.com', 'fleur4@email.com', 'lars5@email.com',
+                'noa6@email.com', 'joris7@email.com', 'esmee8@email.com', 'thijs9@email.com', 'lieke10@email.com',
+            ];
 
             for (let i = 1; i <= 50; i++) {
                 const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
                 const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
                 const age = Math.floor(Math.random() * (30 - 18 + 1)) + 18;
-                const email = `${firstName.toLowerCase()}${i}@email.com`;
+                const email = emails[i-1];
                 const programId = Math.floor(Math.random() * 3) + 1;
                 const hobbies = JSON.stringify(['Lezen', 'Sport', 'Coderen', 'Muziek', 'Fotografie']);
-                const password = generatePassword();
+                const password = 'testpassword123';
                 
                 db.run(`INSERT OR IGNORE INTO Users (user_id, first_name, last_name, age, email, password, program_id, hobbies) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
