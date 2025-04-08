@@ -27,9 +27,6 @@ router.post('/', (req, res) => {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
-        // Log de gevonden gebruiker
-        console.log('Gevonden gebruiker:', user);
-
         bcrypt.compare(password, user.password, (err, result) => {
             if (err) {
                 console.error(err);
