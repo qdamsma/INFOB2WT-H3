@@ -1,6 +1,8 @@
 // database.js
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const dbPath = path.resolve(__dirname, 'my_website.db'); // Explicit path
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -117,10 +119,34 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
             const hobbies = JSON.stringify(['Lezen', 'Sport', 'Coderen']);
 
-            fixedUsers.forEach(user => {
-                db.run(`INSERT OR IGNORE INTO Users (user_id, first_name, last_name, age, email, password, program_id, hobbies) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [...user, hobbies]);
+            const insertUsers = fixedUsers.map(user => {
+                return new Promise((resolve, reject) => {
+                    bcrypt.hash(user[5], saltRounds, (err, hashedPassword) => {
+                        if (err) return reject(err);
+            
+                        db.run(`INSERT OR IGNORE INTO Users 
+                                (user_id, first_name, last_name, age, email, password, program_id, hobbies) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
+                            [user[0], user[1], user[2], user[3], user[4], hashedPassword, user[6], hobbies],
+                            (err) => {
+                                if (err) return reject(err);
+                                resolve();
+                            }
+                        );
+                    });
+                });
             });
+
+            const userCourses = [
+                [1, 1],
+                [1, 2],
+                [2, 3],
+                [2, 4],
+                [3, 1],
+                [3, 3],
+                [4, 5],
+                [5, 6]
+            ];
 
             const friendships = [
                 [1, 2],
@@ -129,10 +155,6 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 [3, 5]
             ];
 
-            friendships.forEach(([user1, user2]) => {
-                db.run(`INSERT OR IGNORE INTO Friendships (user_id, friend_id, status) VALUES (?, ?, 1)`, [user1, user2]);
-            });
-
             const messages = [
                 [1, 2, "Hey, hoe gaat het?"],
                 [2, 1, "Prima! En met jou?"],
@@ -140,10 +162,27 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 [4, 2, "Heb je de opdracht al af?"],
                 [5, 3, "Ik heb moeite met databases, kun je helpen?"]
             ];
-
-            messages.forEach(([sender, receiver, text]) => {
-                db.run(`INSERT OR IGNORE INTO Messages (sender_id, receiver_id, message_text) VALUES (?, ?, ?)`, [sender, receiver, text]);
-            });
+            
+            Promise.all(insertUsers)
+                .then(() => {
+                    // Voeg daarna pas userCourses, friendships en messages toe
+                    userCourses.forEach(([userId, courseId]) => {
+                        db.run(`INSERT OR IGNORE INTO User_Courses (user_id, course_id, date_enrolled) VALUES (?, ?, DATE('now'))`, [userId, courseId]);
+                    });
+            
+                    friendships.forEach(([user1, user2]) => {
+                        db.run(`INSERT OR IGNORE INTO Friendships (user_id, friend_id, status) VALUES (?, ?, 1)`, [user1, user2]);
+                    });
+            
+                    messages.forEach(([sender, receiver, text]) => {
+                        db.run(`INSERT OR IGNORE INTO Messages (sender_id, receiver_id, message_text) VALUES (?, ?, ?)`, [sender, receiver, text]);
+                    });
+            
+                    console.log("Database succesvol gevuld met vaste testdata!");
+                })
+                .catch(err => {
+                    console.error("Error inserting users:", err);
+                });
 
             console.log("Database succesvol gevuld met vaste testdata!");
         }); // End serialize
