@@ -10,13 +10,14 @@ var indexRouter = require('./routes/index');
 var aboutRouter = require('./routes/about');
 var projectRouter = require('./routes/project');
 var loginRouter = require('./routes/login');
+var membersRouter = require('./routes/member');
 var usersRouter = require('./routes/users');
 var coursesRouter = require('./routes/courses');
 var programsRouter = require('./routes/programs');
 var messagesRouter = require('./routes/messages');
 var friendsRouter = require('./routes/friends');
 var user_coursesRouter = require('./routes/user_courses');
-
+const studentRoutes = require('./routes/students');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/member', membersRouter);
 app.use('/about', aboutRouter);
 app.use('/project', projectRouter);
 app.use('/login', loginRouter);
@@ -41,6 +43,7 @@ app.use('/courses', coursesRouter);
 app.use('/programs', programsRouter);
 app.use('/messages', messagesRouter);
 app.use('/friends', friendsRouter);
+app.use('/api/students', studentRoutes);
 app.use('/user_courses', user_coursesRouter);
 
 

@@ -14,6 +14,7 @@ class Person {
     }
 
     set firstName(value) {
+        console.log("Setting firstName:", value);
         if (typeof value !== 'string') {
             throw new Error("Ongeldige Voornaam");
         }
@@ -49,7 +50,8 @@ class Course {
     }
 
     set title(value) {
-        if (typeof value !== 'string' || !/^[A-Za-z\u00C0-\u017F\s-]+$/.test(value)) {
+        console.log("Setting title:", value);
+        if (typeof value !== 'string') {
             throw new Error("Ongeldige Titel");
         }
         this.#title = value;
@@ -90,18 +92,8 @@ class Student extends Person {
     #photo;
     #major;
     #courses;
-    #intro;
-    #head1;
-    #texts1;
-    #head2;
-    #texts2;
-    #head3;
-    #texts3;
-    #head4;
-    #texts4;
-    #headVak;
 
-    constructor(firstName, lastName, age, hobbies, email, photo, major, courses, intro, head1, texts1, head2, texts2, head3, texts3, head4, texts4, headVak) {
+    constructor(firstName, lastName, age, hobbies, email, photo, major, courses) {
 
         super(firstName, lastName);
         this.age = age;
@@ -110,16 +102,6 @@ class Student extends Person {
         this.photo = photo;
         this.major = major;
         this.courses = courses.map(course => new Course(course.title, course.teacher, course.description));
-        this.intro = intro;
-        this.head1 = head1;
-        this.texts1 = texts1;
-        this.head2 = head2;
-        this.texts2 = texts2;
-        this.head3 = head3;
-        this.texts3 = texts3;
-        this.head4 = head4;
-        this.texts4 = texts4;
-        this.headVak = headVak;
     }
     
     get age() {
@@ -191,101 +173,6 @@ class Student extends Person {
         }
         this.#courses = value;
     }
-
-    get intro() {
-        return this.#intro;
-    }
-
-    set intro(value) {
-        if (typeof value !== 'string') {
-            throw new Error("Ongeldige Intro");
-        }
-        this.#intro = value;
-    }
-
-    get head1() {
-        return this.#head1;
-    }
-
-    set head1(value) {
-        if (typeof value !== 'string') {
-            throw new Error("Ongeldige Header");
-        }
-        this.#head1 = value;
-    }
-
-    get texts1() {
-        return this.#texts1;
-    }
-
-    set texts1(value) {
-        if (typeof value !== 'string') {
-            throw new Error("Ongeldige Text");
-        }
-        this.#texts1 = value;
-    }
-
-    get head2() {
-        return this.#head2;
-    }
-
-    set head2(value) {
-        if (typeof value !== 'string') {
-            throw new Error("Ongeldige Header");
-        }
-        this.#head2 = value;
-    }
-
-    get texts2() {
-        return this.#texts2;
-    }
-
-    set texts2(value) {
-        if (typeof value !== 'string') {
-            throw new Error("Ongeldige Text");
-        }
-        this.#texts2 = value;
-    }
-
-    get head3() {
-        return this.#head3;
-    }
-
-    set head3(value) {
-        this.#head3 = value;
-    }
-
-    get texts3() {
-        return this.#texts3;
-    }
-
-    set texts3(value) {
-        this.#texts3 = value;
-    }
-
-    get head4() {
-        return this.#head4;
-    }
-
-    set head4(value) {
-        this.#head4 = value;
-    }
-
-    get texts4() {
-        return this.#texts4;
-    }
-
-    set texts4(value) {
-        this.#texts4 = value;
-    }
-
-    get headVak(){
-        return this.#headVak;
-    }
-
-    set headVak(value){
-        this.#headVak = value;
-    }
 }
 
 // Functie om JSON-bestand in te laden
@@ -310,20 +197,19 @@ if (fileInput) {
 
 // Functie om de data te displayen
 function displayStudent(student) {
-    localStorage.setItem('studentData', JSON.stringify(student));
 
     const mainContainer = document.getElementById('mainContent');
 
     // Maakt een kaart aan en voegt de klasse toe
     const card = document.createElement('a');
-    card.classList.add('card');
-    card.href = "member.html";
+    card.classList.add('student-card');
+    card.href = "/member";
 
     // Maakt image element aan
     const img = document.createElement('img');
-    img.src = student.photo;
+    img.src = student.photo ? student.photo : '../images/icon.png';
     img.alt = student.firstName;
-    img.classList.add("card__image", "card__image--Mem1");
+    img.classList.add("student-card__image", "card__image--Mem1");
 
     // Naam toevoegen
     const name = document.createElement('h2');
@@ -355,63 +241,12 @@ function displayStudent(student) {
                 },
                 description: course.description
             })),
-            intro: student.intro,
-            head1: student.head1,
-            texts1: student.texts1,
-            head2: student.head2,
-            texts2: student.texts2,
-            head3: student.head3,
-            texts3: student.texts3,
-            head4: student.head4,
-            texts4: student.texts4,
-            headVak: student.headVak
         }));
     });
 
     // Voeg de kaart toe aan de pagina
     mainContainer.appendChild(card);
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    const studentData = localStorage.getItem('studentData');
-
-    if (studentData) {
-        const data = JSON.parse(studentData);
-
-        const courses = Array.isArray(data.courses) ? data.courses.map(course => 
-            new Course(
-                course.title, 
-                course.teacher ? new Person(course.teacher.firstName, course.teacher.lastName) : null, 
-                course.description
-            )
-        ) : [];
-
-        const student = new Student(
-            data.firstName, 
-            data.lastName, 
-            data.age, 
-            data.hobbies, 
-            data.email, 
-            data.photo, 
-            data.major,
-            courses, 
-            data.intro, 
-            data.head1, 
-            data.texts1, 
-            data.head2, 
-            data.texts2, 
-            data.head3, 
-            data.texts3, 
-            data.head4, 
-            data.texts4, 
-            data.headVak
-        );
-
-        showStudentDetails(student);
-    } else {
-        console.warn("Geen student data gevonden in localStorage.");
-    }
-});
 
 function showStudentDetails(student) {
     const content = document.getElementById('memberContainer');
@@ -434,51 +269,7 @@ function showStudentDetails(student) {
     name.textContent = student.firstName;
     name.classList.add("card__header");
 
-    const intro = document.createElement('p');
-    intro.textContent = student.intro;
-    intro.classList.add("card__paragraph");
-
-    card.append(img, name, intro);
-
-    const head1 = document.createElement('h3');
-    head1.textContent = student.head1;
-    head1.classList.add("about-textbox__head");
-    about.appendChild(head1);
-
-    const texts1 = document.createElement('p');
-    texts1.textContent = student.texts1;
-    texts1.classList.add("about-textbox__para");
-    about.appendChild(texts1);
-
-    const head2 = document.createElement('h3');
-    head2.textContent = student.head2;
-    head2.classList.add("about-textbox__head");
-    about.appendChild(head2);
-
-    const texts2 = document.createElement('p');
-    texts2.textContent = student.texts2;
-    texts2.classList.add("about-textbox__para");
-    about.appendChild(texts2);
-
-    const head3 = document.createElement('h3');
-    head3.textContent = student.head3;
-    head3.classList.add("about-textbox__head");
-    about.appendChild(head3);
-
-    const texts3 = document.createElement('p');
-    texts3.textContent = student.texts3;
-    texts3.classList.add("about-textbox__para");
-    about.appendChild(texts3);
-
-    const head4 = document.createElement('h3');
-    head4.textContent = student.head4;
-    head4.classList.add("about-textbox__head");
-    about.appendChild(head4);
-
-    const texts4 = document.createElement('p');
-    texts4.textContent = student.texts4;
-    texts4.classList.add("about-textbox__para");
-    about.appendChild(texts4);
+    card.append(img, name);
 
     const hobbyList = document.createElement('ul');
     hobbyList.classList.add("about-textbox__list");
@@ -508,12 +299,6 @@ function showStudentDetails(student) {
     });
 
     about.appendChild(hobbyList);
-
-    const headVak = document.createElement('h3');
-    headVak.textContent = student.headVak;
-    headVak.classList.add("about-textbox__head");
-
-    about.appendChild(headVak);
     about.appendChild(courseList);
 
     content.appendChild(card);

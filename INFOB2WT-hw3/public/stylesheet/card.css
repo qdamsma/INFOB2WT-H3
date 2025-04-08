@@ -10,6 +10,29 @@
     text-decoration: none;
 }
 
+.student-card {
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 220px;
+    height: 80px;
+    border: #888;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding-left: 10px;
+    margin: 10px;
+    text-decoration: none;
+}
+
+.student-card__image {
+    
+    width: 20%;
+    height: auto;
+    border: 1px solid #888;
+    border-radius: 8px;
+}
+
 a.card:hover{
     background-color: #248fe7;
 }
