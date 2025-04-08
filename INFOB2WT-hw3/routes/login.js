@@ -4,9 +4,12 @@ const User = require('../models/users');
 var router = express.Router();
 const bcrypt = require('bcrypt');
 
+const db = require('../database');
+
 router.get('/', function(req, res, next) {
     res.sendFile(path.join(__dirname, '../views/login.html'));
 });
+
 
 // Login
 router.post('/', (req, res) => {
