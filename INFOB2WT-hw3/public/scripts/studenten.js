@@ -1,6 +1,6 @@
 console.log("studenten.js is geladen");
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/students')
+    fetch('/group19/api/students')
         .then(response => response.json())
         .then(data => {
             data.forEach(studentData => {

@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    fetch(`/api/students/${studentId}`)
+    fetch(`/group19/api/students/${studentId}`)
         .then(res => {
             if (!res.ok) throw new Error("Student niet gevonden");
             return res.json();
@@ -217,7 +217,7 @@ function displayStudent(student) {
     // Maakt een kaart aan en voegt de klasse toe
     const card = document.createElement('a');
     card.classList.add('student-card');
-    card.href = `/student?id=${student.id}`;
+    card.href = `/group19/student?id=${student.id}`;
 
     // Maakt image element aan
     const img = document.createElement('img');

@@ -29,7 +29,7 @@ router.post('/', (req, res) => {
 
                 req.session.userId = this.lastID;
                 console.log("Gebruiker geregistreerd:", this.lastID);
-                res.redirect('/');
+                res.redirect('/group19/');
             }
         );
     });

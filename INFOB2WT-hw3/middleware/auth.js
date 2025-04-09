@@ -4,7 +4,7 @@ function authMiddleware(req, res, next) {
       next();
     } else {
       console.log("Not logged in, redirecting to /login");
-      res.redirect("/login");
+      res.redirect("/group19/login");
     }
 }
 

@@ -40,7 +40,7 @@ router.post('/', (req, res) => {
 
             req.session.userId = user.user_id;
             console.log("Login success, session userId:", req.session.userId);
-            res.redirect('/');
+            res.redirect('/group19/');
         });
     });
 });

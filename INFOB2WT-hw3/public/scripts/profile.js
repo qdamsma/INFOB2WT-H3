@@ -1,4 +1,4 @@
-fetch('/profile/data')
+fetch('/group19/profile/data')
     .then(response => response.json())
     .then(data => {
         console.log('Ontvangen data:', data);
