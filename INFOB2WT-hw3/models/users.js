@@ -15,17 +15,17 @@ const User = {
                     newUser.last_name,
                     newUser.age,
                     newUser.email,
-                    hash,  // Store the hashed password
+                    hash, 
                     newUser.photo_path,
                     newUser.program_id,
                     newUser.hobbies
                 ],
-                function (err) { // Use function keyword to access 'this'
+                function (err) { 
                     if (err) {
-                        return callback(err, null); // Indicate error
+                        return callback(err, null);
                     }
-                    //Get the newly created user ID
-                    return callback(null, { user_id: this.lastID, ...newUser }); // Indicate success
+
+                    return callback(null, { user_id: this.lastID, ...newUser });
                 }
             );
         });

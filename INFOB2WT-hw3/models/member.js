@@ -84,6 +84,7 @@ class Course {
 
 class Student extends Person {
 
+    #id
     #age;
     #hobbies;
     #email;
@@ -91,8 +92,9 @@ class Student extends Person {
     #major;
     #courses;
 
-    constructor(firstName, lastName, age, hobbies, email, photo, major, courses) {
+    constructor(id, firstName, lastName, age, hobbies, email, photo, major, courses) {
 
+        this.id = id;
         super(firstName, lastName);
         this.age = age;
         this.hobbies = hobbies;
@@ -100,6 +102,17 @@ class Student extends Person {
         this.photo = photo;
         this.major = major;
         this.courses = courses.map(course => new Course(course.title, course.teacher, course.description));
+    }
+
+    get id() {
+        return this.#id;
+    }
+
+    set id(value) {
+        if (typeof value !== 'number') {
+            throw new Error("Ongeldige id");
+        }
+        this.#id = value;
     }
     
     get age() {

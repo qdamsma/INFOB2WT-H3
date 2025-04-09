@@ -85,7 +85,7 @@ class Course {
 }
 
 class Student extends Person {
-
+    #id
     #age;
     #hobbies;
     #email;
@@ -93,9 +93,9 @@ class Student extends Person {
     #major;
     #courses;
 
-    constructor(firstName, lastName, age, hobbies, email, photo, major, courses) {
-
+    constructor(id, firstName, lastName, age, hobbies, email, photo, major, courses) {
         super(firstName, lastName);
+        this.id = id;
         this.age = age;
         this.hobbies = hobbies;
         this.email = email;
@@ -104,6 +104,17 @@ class Student extends Person {
         this.courses = courses.map(course => new Course(course.title, course.teacher, course.description));
     }
     
+    get id() {
+        return this.#id;
+    }
+
+    set id(value) {
+        if (typeof value !== 'number') {
+            throw new Error("Ongeldige id");
+        }
+        this.#id = value;
+    }
+
     get age() {
         return this.#age;
     }
@@ -175,25 +186,27 @@ class Student extends Person {
     }
 }
 
-// Functie om JSON-bestand in te laden
-const fileInput = document.getElementById('fileInput');
-if (fileInput) {
-    fileInput.addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const data = JSON.parse(e.target.result);
-            const student = new Student(
-                data.firstName, data.lastName, data.age, data.hobbies, data.email, data.photo, data.major,
-                data.courses, data.introduction, data.head1, data.texts1, data.head2, data.texts2, data.head3, data.texts3, data.head4, data.texts4, data.headVak
-            );
-            displayStudent(student);
-        };
-        reader.readAsText(file);
-    });
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const studentId = params.get('id');
+
+    if (!studentId) {
+        console.error("Geen student ID gevonden in de URL.");
+        return;
+    }
+
+    fetch(`/api/students/${studentId}`)
+        .then(res => {
+            if (!res.ok) throw new Error("Student niet gevonden");
+            return res.json();
+        })
+        .then(student => {
+            showStudentDetails(student);
+        })
+        .catch(err => {
+            console.error("Fout bij het ophalen van student:", err.message);
+        });
+});
 
 // Functie om de data te displayen
 function displayStudent(student) {
@@ -203,7 +216,7 @@ function displayStudent(student) {
     // Maakt een kaart aan en voegt de klasse toe
     const card = document.createElement('a');
     card.classList.add('student-card');
-    card.href = "/member";
+    card.href = `/api/students/${student.id}`;
 
     // Maakt image element aan
     const img = document.createElement('img');
@@ -216,16 +229,12 @@ function displayStudent(student) {
     name.textContent = student.firstName;
     name.classList.add("card__header");
 
-    // Intro toevoegen
-    const intro = document.createElement('p');
-    intro.textContent = student.intro;
-    intro.classList.add("card__paragraph");
-
     // Voeg alle elementen toe aan de kaart
-    card.append(img, name, intro);
+    card.append(img, name);
 
     card.addEventListener('click', () => {
         localStorage.setItem('studentData', JSON.stringify({
+            id: student.id,
             firstName: student.firstName,
             lastName: student.lastName,
             age: student.age,
