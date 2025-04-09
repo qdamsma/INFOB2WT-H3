@@ -1,6 +1,8 @@
 // database.js
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const dbPath = path.resolve(__dirname, 'my_website.db'); // Explicit path
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -107,75 +109,127 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 ('Ondernemerschap', 'Hoe start en beheer je een bedrijf.', '10 weken', 5)`
             );
             
-            const firstNames = ['Daan', 'Sanne', 'Bram', 'Fleur', 'Lars', 'Noa', 'Joris', 'Esmee', 'Thijs', 'Lieke'];
-            const lastNames = ['De Vries', 'Jansen', 'Van den Berg', 'Bakker', 'Peters', 'Hendriks', 'Meijer', 'Smit', 'Koning', 'Bos'];
+            const fixedUsers = [
+                [1, 'Daan', 'De Vries', 22, 'daan1@email.com', 'Pass123!', 1, ['Lezen', 'Sport', 'Coderen']],
+                [2, 'Sanne', 'Jansen', 24, 'sanne2@email.com', 'Pass123!', 2, ['Reizen', 'Muziek', 'Film']],
+                [3, 'Bram', 'Van den Berg', 21, 'bram3@email.com', 'Pass123!', 1, ['Koken', 'Fotografie', 'Tuinieren']],
+                [4, 'Fleur', 'Bakker', 23, 'fleur4@email.com', 'Pass123!', 3, ['Schaken', 'Wandelen', 'Kunst']],
+                [5, 'Lars', 'Peters', 20, 'lars5@email.com', 'Pass123!', 1, ['Vogels kijken', 'Dieren verzorgen', 'Koken']],
+                [6, 'Emma', 'Visser', 22, 'emma6@email.com', 'Pass123!', 2, ['Reizen', 'Muziek', 'Schaken']],
+                [7, 'Milan', 'Koopman', 23, 'milan7@email.com', 'Pass123!', 1, ['Lezen', 'Sport', 'Fotografie']],
+                [8, 'Sophie', 'Van der Meer', 21, 'sophie8@email.com', 'Pass123!', 3, ['Wandelen', 'Film', 'Kunst']],
+                [9, 'Noah', 'De Lange', 24, 'noah9@email.com', 'Pass123!', 2, ['Coderen', 'Tuinieren', 'Muziek']],
+                [10, 'Lucas', 'Meijer', 25, 'lucas10@email.com', 'Pass123!', 1, ['Reizen', 'Fotografie', 'Film']],
+                [11, 'Julia', 'Van den Broek', 23, 'julia11@email.com', 'Pass123!', 3, ['Lezen', 'Koken', 'Tuinieren']],
+                [12, 'David', 'De Boer', 26, 'david12@email.com', 'Pass123!', 2, ['Dieren verzorgen', 'Schaken', 'Wandelen']],
+                [13, 'Eva', 'Peters', 21, 'eva13@email.com', 'Pass123!', 1, ['Kunst', 'Sport', 'Lezen']],
+                [14, 'Ruben', 'Jansen', 22, 'ruben14@email.com', 'Pass123!', 3, ['Muziek', 'Fotografie', 'Reizen']],
+                [15, 'Olivia', 'Hendriks', 24, 'olivia15@email.com', 'Pass123!', 2, ['Film', 'Koken', 'Muziek']],
+                [16, 'Tim', 'Bakker', 23, 'tim16@email.com', 'Pass123!', 1, ['Coderen', 'Tuinieren', 'Lezen']],
+                [17, 'Zoe', 'Koster', 21, 'zoe17@email.com', 'Pass123!', 3, ['Wandelen', 'Vogels kijken', 'Schaken']],
+                [18, 'Thomas', 'De Vries', 22, 'thomas18@email.com', 'Pass123!', 1, ['Sport', 'Coderen', 'Film']],
+                [19, 'Maya', 'Van Dijk', 23, 'maya19@email.com', 'Pass123!', 2, ['Muziek', 'Fotografie', 'Reizen']],
+                [20, 'Luke', 'Hendriks', 21, 'luke20@email.com', 'Pass123!', 3, ['Koken', 'Lezen', 'Vogels kijken']],
+                [21, 'Chloe', 'Peters', 24, 'chloe21@email.com', 'Pass123!', 1, ['Schaken', 'Dieren verzorgen', 'Reizen']],
+                [22, 'Ethan', 'Visser', 25, 'ethan22@email.com', 'Pass123!', 2, ['Muziek', 'Wandelen', 'Tuinieren']],
+                [23, 'Mila', 'Van den Berg', 20, 'mila23@email.com', 'Pass123!', 3, ['Sport', 'Film', 'Lezen']],
+                [24, 'Liam', 'Jansen', 21, 'liam24@email.com', 'Pass123!', 1, ['Fotografie', 'Koken', 'Reizen']],
+                [25, 'Fay', 'Koopman', 22, 'fay25@email.com', 'Pass123!', 2, ['Lezen', 'Schaken', 'Tuinieren']],
+                [26, 'Jayden', 'Meijer', 23, 'jayden26@email.com', 'Pass123!', 1, ['Muziek', 'Sport', 'Film']],
+                [27, 'Vera', 'De Lange', 24, 'vera27@email.com', 'Pass123!', 3, ['Schaken', 'Kunst', 'Vogels kijken']],
+                [28, 'Sebastian', 'Van der Meer', 22, 'sebastian28@email.com', 'Pass123!', 1, ['Wandelen', 'Coderen', 'Koken']],
+                [29, 'Milan', 'De Boer', 23, 'milan29@email.com', 'Pass123!', 2, ['Reizen', 'Fotografie', 'Sport']],
+                [30, 'Zoey', 'Van den Broek', 21, 'zoey30@email.com', 'Pass123!', 3, ['Lezen', 'Schaken', 'Muziek']],
+                [31, 'Jay', 'Bakker', 22, 'jay31@email.com', 'Pass123!', 1, ['Film', 'Wandelen', 'Kunst']],
+                [32, 'Levi', 'Visser', 21, 'levi32@email.com', 'Pass123!', 2, ['Tuinieren', 'Schaken', 'Muziek']],
+                [33, 'Kira', 'Hendriks', 23, 'kira33@email.com', 'Pass123!', 3, ['Vogels kijken', 'Sport', 'Fotografie']],
+                [34, 'Max', 'De Vries', 24, 'max34@email.com', 'Pass123!', 1, ['Coderen', 'Reizen', 'Film']],
+                [35, 'Sienna', 'Peters', 22, 'sienna35@email.com', 'Pass123!', 2, ['Koken', 'Schaken', 'Muziek']],
+                [36, 'Noa', 'Van Dijk', 21, 'noa36@email.com', 'Pass123!', 3, ['Tuinieren', 'Sport', 'Lezen']],
+                [37, 'Riley', 'Jansen', 23, 'riley37@email.com', 'Pass123!', 1, ['Fotografie', 'Kunst', 'Film']],
+                [38, 'Amira', 'Van den Berg', 22, 'amira38@email.com', 'Pass123!', 2, ['Muziek', 'Schaken', 'Reizen']],
+                [39, 'Samuel', 'Koopman', 24, 'samuel39@email.com', 'Pass123!', 3, ['Lezen', 'Tuinieren', 'Vogels kijken']],
+                [40, 'Lena', 'Meijer', 25, 'lena40@email.com', 'Pass123!', 1, ['Sport', 'Muziek', 'Coderen']],
+                [41, 'Mason', 'Van den Broek', 21, 'mason41@email.com', 'Pass123!', 2, ['Schaken', 'Fotografie', 'Film']],
+                [42, 'Ella', 'Hendriks', 23, 'ella42@email.com', 'Pass123!', 3, ['Koken', 'Reizen', 'Wandelen']],
+                [43, 'Oscar', 'De Lange', 24, 'oscar43@email.com', 'Pass123!', 1, ['Dieren verzorgen', 'Lezen', 'Schaken']],
+                [44, 'Mila', 'De Boer', 22, 'mila44@email.com', 'Pass123!', 2, ['Sport', 'Film', 'Tuinieren']],
+                [45, 'Isaac', 'Visser', 21, 'isaac45@email.com', 'Pass123!', 3, ['Muziek', 'Koken', 'Fotografie']],
+                [46, 'Amos', 'Bakker', 20, 'amos46@email.com', 'Pass123!', 1, ['Vogels kijken', 'Schaken', 'Lezen']],
+                [47, 'Lucy', 'Jansen', 22, 'lucy47@email.com', 'Pass123!', 2, ['Sport', 'Reizen', 'Koken']],
+                [48, 'Alex', 'Van Dijk', 24, 'alex48@email.com', 'Pass123!', 3, ['Muziek', 'Tuinieren', 'Schaken']],
+                [49, 'Mila', 'Hendriks', 23, 'mila49@email.com', 'Pass123!', 1, ['Film', 'Sport', 'Fotografie']],
+                [50, 'Elias', 'De Vries', 21, 'elias50@email.com', 'Pass123!', 2, ['Koken', 'Lezen', 'Muziek']]
+            ];
+
+            const insertUsers = fixedUsers.map(user => {
+                return new Promise((resolve, reject) => {
+                    bcrypt.hash(user[5], saltRounds, (err, hashedPassword) => {
+                        if (err) return reject(err);
+
+                        const hobbiesJson = JSON.stringify(user[7]); 
             
-            function generatePassword(length = 8) {
-                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
-                let password = '';
-                for (let i = 0; i < length; i++) {
-                    password += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return password;
-            }
-
-            for (let i = 1; i <= 50; i++) {
-                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-                const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-                const age = Math.floor(Math.random() * (30 - 18 + 1)) + 18;
-                const email = `${firstName.toLowerCase()}${i}@email.com`;
-                const programId = Math.floor(Math.random() * 3) + 1;
-                const hobbies = JSON.stringify(['Lezen', 'Sport', 'Coderen', 'Muziek', 'Fotografie']);
-                const password = generatePassword();
-                
-                db.run(`INSERT OR IGNORE INTO Users (user_id, first_name, last_name, age, email, password, program_id, hobbies) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
-                    [i, firstName, lastName, age, email, password, programId, hobbies]
-                );
-            }
-
-            for (let userId = 1; userId <= 50; userId++) {
-                const numCourses = Math.floor(Math.random() * 4) + 2;
-                const selectedCourses = new Set();
-
-                while (selectedCourses.size < numCourses) {
-                    selectedCourses.add(Math.floor(Math.random() * 10) + 1);
-                }
-
-                selectedCourses.forEach(courseId => {
-                    db.run(`INSERT OR IGNORE INTO User_Courses (user_id, course_id, date_enrolled) VALUES (?, ?, DATE('now'))`,
-                        [userId, courseId]);
+                        db.run(`INSERT OR IGNORE INTO Users 
+                                (user_id, first_name, last_name, age, email, password, program_id, hobbies) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
+                            [user[0], user[1], user[2], user[3], user[4], hashedPassword, user[6], hobbiesJson],
+                            (err) => {
+                                if (err) return reject(err);
+                                resolve();
+                            }
+                        );
+                    });
                 });
-            }
+            });
 
-            for (let i = 0; i < 20; i++) {
-                const user1 = Math.floor(Math.random() * 50) + 1;
-                let user2 = Math.floor(Math.random() * 50) + 1;
-                while (user2 === user1) user2 = Math.floor(Math.random() * 50) + 1;
+            const userCourses = [
+                [1, 1],
+                [1, 2],
+                [2, 3],
+                [2, 4],
+                [3, 1],
+                [3, 3],
+                [4, 5],
+                [5, 6]
+            ];
 
-                db.run(`INSERT OR IGNORE INTO Friendships (user_id, friend_id, status) VALUES (?, ?, 1)`, [user1, user2]);
-            }
+            const friendships = [
+                [1, 2],
+                [1, 3],
+                [2, 4],
+                [3, 5]
+            ];
 
-            for (let i = 0; i < 30; i++) {
-                const sender = Math.floor(Math.random() * 50) + 1;
-                let receiver = Math.floor(Math.random() * 50) + 1;
-                while (receiver === sender) receiver = Math.floor(Math.random() * 50) + 1;
+            const messages = [
+                [1, 2, "Hey, hoe gaat het?"],
+                [2, 1, "Prima! En met jou?"],
+                [3, 1, "Wil je samen studeren?"],
+                [4, 2, "Heb je de opdracht al af?"],
+                [5, 3, "Ik heb moeite met databases, kun je helpen?"]
+            ];
+            
+            Promise.all(insertUsers)
+                .then(() => {
+                    // Voeg daarna pas userCourses, friendships en messages toe
+                    userCourses.forEach(([userId, courseId]) => {
+                        db.run(`INSERT OR IGNORE INTO User_Courses (user_id, course_id, date_enrolled) VALUES (?, ?, DATE('now'))`, [userId, courseId]);
+                    });
+            
+                    friendships.forEach(([user1, user2]) => {
+                        db.run(`INSERT OR IGNORE INTO Friendships (user_id, friend_id, status) VALUES (?, ?, 1)`, [user1, user2]);
+                    });
+            
+                    messages.forEach(([sender, receiver, text]) => {
+                        db.run(`INSERT OR IGNORE INTO Messages (sender_id, receiver_id, message_text) VALUES (?, ?, ?)`, [sender, receiver, text]);
+                    });
+            
+                    console.log("Database succesvol gevuld met vaste testdata!");
+                })
+                .catch(err => {
+                    console.error("Error inserting users:", err);
+                });
 
-                const messages = [
-                    "Hey, hoe gaat het?",
-                    "Wat vond je van het laatste college?",
-                    "Wil je samen studeren?",
-                    "Heb je de opdracht al af?",
-                    "Laten we dit weekend afspreken!",
-                    "Ik heb moeite met de database-oefening, kun je helpen?"
-                ];
-                const messageText = messages[Math.floor(Math.random() * messages.length)];
-
-                db.run(`INSERT OR IGNORE INTO Messages (sender_id, receiver_id, message_text) VALUES (?, ?, ?)`,
-                    [sender, receiver, messageText]);
-            }
-
-            console.log("Database succesvol gevuld met testdata!");
+            console.log("Database succesvol gevuld met vaste testdata!");
         }); // End serialize
     }
 });
