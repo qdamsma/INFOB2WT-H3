@@ -36,6 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use(express.static(path.join(__dirname, 'public')));
 
 groupRouter.use('/', indexRouter);
 groupRouter.use('/login', loginRouter);
@@ -53,10 +54,7 @@ groupRouter.use('/api/students', studentapiRoutes);
 groupRouter.use('/student', studentRoutes);
 groupRouter.use('/user_courses', user_coursesRouter);
 
-// gebruik deze router onder /group19
-app.use('/group19', groupRouter);
-
-app.use('/group19', express.static(path.join(__dirname, 'public')));
+app.use('/', groupRouter);
 
 
 // catch 404 and forward to error handler

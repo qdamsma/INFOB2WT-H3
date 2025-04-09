@@ -3,7 +3,6 @@ function authMiddleware(req, res, next) {
     if (req.session.userId) {
       next();
     } else {
-      console.log("Not logged in, redirecting to /login");
       res.redirect("/group19/login");
     }
 }
