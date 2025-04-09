@@ -18,6 +18,7 @@ var messagesRouter = require('./routes/messages');
 var friendsRouter = require('./routes/friends');
 var user_coursesRouter = require('./routes/user_courses');
 const studentRoutes = require('./routes/students');
+const registerRouter = require('./routes/register');
 
 var app = express();
 
@@ -38,6 +39,7 @@ app.use('/member', membersRouter);
 app.use('/about', aboutRouter);
 app.use('/project', projectRouter);
 app.use('/login', loginRouter);
+app.use('/register', registerRouter);
 app.use('/users', usersRouter);
 app.use('/courses', coursesRouter);
 app.use('/programs', programsRouter);

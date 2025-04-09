@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Register Pagina">
+    <link rel="stylesheet" href="../stylesheet/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <title>Group 19</title>
+</head>
+
+<section class="login-card">
+  <h1>Register</h1>
+  <form method="POST" action="/register">
+    <label>First Name:</label><br />
+    <input type="text" name="first_name" required><br />
+    
+    <label>Last Name:</label><br />
+    <input type="text" name="last_name" required><br />
+    
+    <label>Email:</label><br />
+    <input type="email" name="email" required><br />
+    
+    <label>Password:</label><br />
+    <input type="password" name="password" required><br /><br />
+
+    <label>Age:</label><br />
+    <input type="number" name="age" min="0"><br />
+
+    <label>Hobbies:</label><br />
+    <input type="text" name="hobbies" placeholder="e.g., gaming, reading"><br /><br />
+    
+    <button type="submit">Register</button>
+  </form>
+</section>
+
+</html>
