@@ -4,6 +4,7 @@
 @import url(previews.css);
 @import url(hw1.css);
 @import url(login.css);
+@import url(aboutpage.css);
 
 body{
     margin: 0;
@@ -138,7 +139,7 @@ h1{
 
     .navigationnav.show {
         display: flex;
-        height: 200px;
+        height: 300px;
     }
     .navitem{
         width: 100px;

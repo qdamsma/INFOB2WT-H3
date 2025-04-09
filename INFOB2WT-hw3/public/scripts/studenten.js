@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data.forEach(studentData => {
                 try {
                     const student = new Student(
+                        studentData.id,
                         studentData.firstName,
                         studentData.lastName,
                         studentData.age,
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     displayStudent(student);
                     showStudentDetails(student);
                 } catch (error) {
-                    console.error("Kon student niet aanmaken:", s.firstName, error.message);
+                    console.error("Kon student niet aanmaken:", studentData.firstName, error.message);
                 }
             });
         })
