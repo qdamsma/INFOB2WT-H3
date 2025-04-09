@@ -19,6 +19,7 @@ var friendsRouter = require('./routes/friends');
 var user_coursesRouter = require('./routes/user_courses');
 const studentRoutes = require('./routes/students');
 const registerRouter = require('./routes/register');
+var profileRouter = require('./routes/profile');
 
 var app = express();
 
@@ -39,6 +40,7 @@ app.use('/member', membersRouter);
 app.use('/about', aboutRouter);
 app.use('/project', projectRouter);
 app.use('/login', loginRouter);
+app.use('/profile', profileRouter);
 app.use('/register', registerRouter);
 app.use('/users', usersRouter);
 app.use('/courses', coursesRouter);
