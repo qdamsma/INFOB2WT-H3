@@ -34,7 +34,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/group19', express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/member', membersRouter);
@@ -85,5 +85,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.sendFile(path.join(__dirname, 'views', 'error.html')); 
 });
+app.listen(8019);
 
 module.exports = app;

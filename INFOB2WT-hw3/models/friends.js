@@ -1,72 +1,59 @@
 const db = require('../database');
 
-const Friend = {
-    sendFriendRequest: (user_id, friend_id, callback) => {
-        db.run(
-            'INSERT INTO Friendships (user_id, friend_id, status) VALUES (?, ?, ?)',
-            [user_id, friend_id, 0], // 0: pending
-            (err) => {
-                if (err) {
-                    return callback(err);
-                }
-                return callback(null);
-            }
-        );
-    },
+// Check if a friend request already exists (in either direction)
+function checkFriendshipRequest(user_id, friend_id, callback) {
+    const query = `
+        SELECT * FROM Friendships 
+        WHERE (user_id = ? AND friend_id = ?)
+           OR (user_id = ? AND friend_id = ?)
+    `;
+    db.get(query, [user_id, friend_id, friend_id, user_id], callback);
+}
 
-    acceptFriendRequest: (user_id, friend_id, callback) => {
-        db.run(
-            'UPDATE Friendships SET status = ? WHERE user_id = ? AND friend_id = ?',
-            [1, user_id, friend_id], // 1: accepted
-            (err) => {
-                if (err) {
-                    return callback(err);
-                }
-                return callback(null);
-            }
-        );
-    },
+// Send a new friend request
+function sendFriendRequest(user_id, friend_id, callback) {
+    const query = `
+        INSERT INTO Friendships (user_id, friend_id, status)
+        VALUES (?, ?, 0)
+    `;
+    db.run(query, [user_id, friend_id], callback);
+}
 
-    rejectFriendRequest: (user_id, friend_id, callback) => {
-        //Consider just deleting the friendship request instead of rejecting
-        db.run(
-            'DELETE FROM Friendships WHERE user_id = ? AND friend_id = ?',
-            [user_id, friend_id],
-            (err) => {
-                if (err) {
-                    return callback(err);
-                }
-                return callback(null);
-            }
-        );
-    },
+// Accept a friend request (status = 1)
+function acceptFriendRequest(user_id, friend_id, callback) {
+    const query = `
+        UPDATE Friendships
+        SET status = 1
+        WHERE user_id = ? AND friend_id = ? AND status = 0
+    `;
+    db.run(query, [friend_id, user_id], callback); // friend_id had het verzoek gestuurd
+}
 
-    getFriends: (user_id, callback) => {
-        db.all(
-            'SELECT Users.* FROM Users INNER JOIN Friendships ON (Users.user_id = Friendships.friend_id OR Users.user_id = Friendships.user_id) WHERE (Friendships.user_id = ? OR Friendships.friend_id = ?) AND Friendships.status = ? AND Users.user_id != ?',
-            [user_id, user_id, 1, user_id],  // 1: accepted, Exclude the user itself from the list
-            (err, rows) => {
-                if (err) {
-                    return callback(err, null);
-                }
-                return callback(null, rows);
-            }
-        );
-    },
+// Reject a friend request (delete the row)
+function rejectFriendRequest(user_id, friend_id, callback) {
+    const query = `
+        DELETE FROM Friendships
+        WHERE user_id = ? AND friend_id = ? AND status = 0
+    `;
+    db.run(query, [friend_id, user_id], callback);
+}
 
-    //Check if the request is valid
-    checkFriendshipRequest: (user_id, friend_id, callback) => {
-        db.get(
-            'SELECT * FROM Friendships WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)',
-            [user_id, friend_id, friend_id, user_id],
-            (err, row) => {
-                if (err) {
-                    return callback(err, null);
-                }
-                return callback(null, row);
-            }
-        );
-    }
+// Get all friends (only accepted friendships, status = 1)
+function getFriends(user_id, callback) {
+    const query = `
+        SELECT u.id, u.username
+        FROM Users u
+        JOIN Friendships f ON 
+            (f.user_id = ? AND f.friend_id = u.id AND f.status = 1)
+            OR (f.friend_id = ? AND f.user_id = u.id AND f.status = 1)
+    `;
+    db.all(query, [user_id, user_id], callback);
+}
+
+module.exports = {
+    checkFriendshipRequest,
+    sendFriendRequest,
+    acceptFriendRequest,
+    rejectFriendRequest,
+    getFriends
 };
-
-module.exports = Friend;
