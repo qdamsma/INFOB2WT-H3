@@ -201,7 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return res.json();
         })
         .then(student => {
-            showStudentDetails(student);
+            document.getElementById('name').textContent = student.firstName;
+            document.getElementById('email').textContent = student.email;
         })
         .catch(err => {
             console.error("Fout bij het ophalen van student:", err.message);
@@ -216,7 +217,7 @@ function displayStudent(student) {
     // Maakt een kaart aan en voegt de klasse toe
     const card = document.createElement('a');
     card.classList.add('student-card');
-    card.href = `/api/students/${student.id}`;
+    card.href = `/student?id=${student.id}`;
 
     // Maakt image element aan
     const img = document.createElement('img');

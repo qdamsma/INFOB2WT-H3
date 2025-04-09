@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 const db = require('../database');
 const { Student, Course, Person } = require('../models/member'); // zorg dat je member.js exporteert
 

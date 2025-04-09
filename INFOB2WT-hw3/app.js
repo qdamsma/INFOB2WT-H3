@@ -17,7 +17,8 @@ var programsRouter = require('./routes/programs');
 var messagesRouter = require('./routes/messages');
 var friendsRouter = require('./routes/friends');
 var user_coursesRouter = require('./routes/user_courses');
-const studentRoutes = require('./routes/students');
+const studentapiRoutes = require('./routes/students');
+const studentRoutes = require('./routes/student');
 const registerRouter = require('./routes/register');
 var profileRouter = require('./routes/profile');
 
@@ -47,7 +48,8 @@ app.use('/courses', coursesRouter);
 app.use('/programs', programsRouter);
 app.use('/messages', messagesRouter);
 app.use('/friends', friendsRouter);
-app.use('/api/students', studentRoutes);
+app.use('/api/students', studentapiRoutes);
+app.use('/student', studentRoutes);
 app.use('/user_courses', user_coursesRouter);
 
 
