@@ -44,14 +44,57 @@
             </li>
         </ul>
     </nav>
-    <h1>Welkom op je profielpagina</h1>
-    <div id="profile-info">
-        <p><strong>Naam:</strong> <span id="name"></span></p>
-        <p><strong>Email:</strong> <span id="email"></span></p>
+    <div class="container">
+        <header>
+            <h1>My Profile</h1>
+            <button id="edit-button">Edit Profile</button>
+        </header>
+
+        <main>
+            <section class="profile-header">
+                <div class="profile-image">
+                    <img id="photo" src="" alt="User Photo">
+                </div>
+                <div class="profile-info" id="profile-info">
+                    <h2 id="name-view"></h2>
+                    <p id="email-view"></p>
+                    <p id="age-view"></p>
+
+                    <input type="text" id="name-edit" class="hidden">
+                    <input type="email" id="email-edit" class="hidden">
+                    <input type="number" id="age-edit" class="hidden">
+
+                </div>
+            </section>
+
+            <section class="profile-details">
+                <h3>Details</h3>
+                <div id="courses-view-group">
+                    <p><strong>Courses:</strong> <span id="courses-view"></span></p>
+                </div>
+            
+                <div id="hobbies-view-group">
+                    <p><strong>Hobbies:</strong> <span id="hobbies-view"></span></p>
+                </div>
+
+                <div id="courses-edit-group" class="hidden">
+                    <label for="courses-edit">Courses:</label>
+                    <input type="text" id="courses-edit">
+                </div><br>
+            
+                <div id="hobbies-edit-group" class="hidden">
+                    <label for="hobbies-edit">Hobbies:</label>
+                    <input type="text" id="hobbies-edit">
+                </div><br>
+
+                <button id="save-button" class="hidden">Save</button>
+                <button id="cancel-button" class="hidden">Cancel</button>
+            </section>
+        </main>
     </div>
 
-    
     <script src="../scripts/profile.js"></script>
+
 </body>
 
 </html>

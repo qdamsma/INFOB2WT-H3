@@ -21,6 +21,10 @@ router.put('/profile/:id', (req,res) => {
     const id = req.params.id;
     const updatedUser = req.body;
 
+    if (!req.session.userId || req.session.userId !== parseInt(userId)) {
+        return res.status(401).json({ error: 'Unauthorized access' });
+    }
+
     User.update(id, updatedUser, (err, user) => {
          if (err) {
             console.error(err);
